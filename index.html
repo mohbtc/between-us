@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f4ef">
+  <title>Between Us 🤍</title>
+  <meta name="description" content="A little world that belongs to two.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f8f4ef;
+      --paper: #fffdf9;
+      --ink: #292522;
+      --muted: #8d827b;
+      --rose: #c98287;
+      --rose-light: #f0d9d8;
+      --line: #eae0d8;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: var(--rose-light);
+      filter: blur(90px);
+      opacity: .48;
+      z-index: -1;
+      pointer-events: none;
+    }
+    body::before {
+      top: -100px;
+      left: -100px;
+    }
+    body::after {
+      right: -100px;
+      bottom: -100px;
+    }
+    .container {
+      width: 100%;
+      max-width: 430px;
+      text-align: center;
+      animation: appear 1s ease both;
+    }
+    .top-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+    .top-label::before,
+    .top-label::after {
+      content: "";
+      width: 20px;
+      height: 1px;
+      background: var(--rose);
+    }
+    .heart-wrap {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 30px;
+      background: rgba(240, 217, 216, .65);
+      border: 1px solid rgba(201, 130, 135, .25);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      animation: float 4s ease-in-out infinite;
+    }
+    .heart {
+      color: var(--rose);
+      font-size: 37px;
+      line-height: 1;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(43px, 12vw, 58px);
+      font-weight: 400;
+      letter-spacing: -2px;
+      line-height: 1.15;
+    }
+    h1 span {
+      color: var(--rose);
+      font-style: italic;
+    }
+    .subtitle {
+      margin: 17px auto 0;
+      max-width: 285px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 34px 0;
+      color: var(--rose);
+      font-size: 12px;
+    }
+    .divider span {
+      height: 1px;
+      width: 45px;
+      background: var(--line);
+    }
+    .welcome-card {
+      background: rgba(255, 253, 249, .78);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 27px 23px;
+      box-shadow: 0 15px 50px rgba(69, 48, 37, .045);
+    }
+    .welcome-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+    .welcome-card > p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+    .field {
+      text-align: left;
+      margin-bottom: 15px;
+    }
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .field input {
+      width: 100%;
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--paper);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(201, 130, 135, .10);
+    }
+    .field input::placeholder {
+      color: #b6aaa2;
+    }
+    .enter-btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 4px;
+      background: var(--ink);
+      color: white;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      cursor: pointer;
+      transition: transform .2s, background .2s;
+    }
+    .enter-btn:active {
+      transform: scale(.98);
+    }
+    .enter-btn:hover {
+      background: #453631;
+    }
+    .message {
+      display: none;
+      margin-top: 14px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: #a34e59;
+    }
+    .footer {
+      margin-top: 28px;
+      color: #a69a92;
+      font-size: 10px;
+      letter-spacing: .5px;
+    }
+    .footer span {
+      color: var(--rose);
+    }
+    .floating-heart {
+      position: fixed;
+      color: var(--rose);
+      opacity: .25;
+      pointer-events: none;
+      animation: drift 7s ease-in-out infinite;
+      z-index: -1;
+    }
+    .heart-one {
+      top: 17%;
+      left: 10%;
+      font-size: 17px;
+    }
+    .heart-two {
+      right: 11%;
+      top: 29%;
+      font-size: 12px;
+      animation-delay: 1.5s;
+    }
+    .heart-three {
+      bottom: 16%;
+      left: 15%;
+      font-size: 13px;
+      animation-delay: 2.5s;
+    }
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+    @keyframes drift {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      50% { transform: translateY(-12px) rotate(10deg); }
+    }
+    @media (max-width: 380px) {
+      body { padding: 20px 15px; }
+      .top-label { margin-bottom: 35px; }
+      .welcome-card { padding: 23px 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-heart heart-one">♡</div>
+  <div class="floating-heart heart-two">♡</div>
+  <div class="floating-heart heart-three">♡</div>
+  <main class="container">
+    <div class="top-label">A space for two</div>
+    <div class="heart-wrap">
+      <div class="heart">♡</div>
+    </div>
+    <h1>Between <span>Us.</span></h1>
+    <p class="subtitle">
+      Somewhere between your world and mine,<br>
+      there's a little place that belongs to us.
+    </p>
+    <div class="divider">
+      <span></span> ♡ <span></span>
+    </div>
+    <section class="welcome-card">
+      <h2>Welcome to our little world</h2>
+      <p>
+        No noise. No crowd. Just two people<br>
+        making something beautiful together.
+      </p>
+      <form id="entryForm">
+        <div class="field">
+          <label for="yourName">Your name</label>
+          <input
+            id="yourName"
+            type="text"
+            placeholder="What should we call you?"
+            maxlength="40"
+            autocomplete="nickname"
+            required
+          >
+        </div>
+        <div class="field">
+          <label for="roomCode">Our private room code</label>
+          <input
+            id="roomCode"
+            type="password"
+            placeholder="Enter your room code"
+            maxlength="64"
+            autocomplete="off"
+            required
+          >
+        </div>
+        <button class="enter-btn" type="submit">
+          Enter our world &nbsp; →
+        </button>
+        <p class="message" id="message" role="alert"></p>
+      </form>
+    </section>
+    <div class="footer">
+      Made with <span>♡</span> for two, and two only.
+    </div>
+  </main>
+  <script>
+    /*
+      This is the visual starting page only.
+      Authentication and private rooms are not connected yet.
+      Do not enter real passwords or sensitive information here.
+    */
+    const form = document.getElementById("entryForm");
+    const message = document.getElementById("message");
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      message.textContent =
+        "Our private room is still being prepared. Come back soon. ♡";
+      message.style.display = "block";
+    });
+  </script>
+</body>
+</html>
