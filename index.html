@@ -1,341 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f8f4ef">
-  <title>Between Us 🤍</title>
-  <meta name="description" content="A little world that belongs to two.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --cream: #f8f4ef;
-      --paper: #fffdf9;
-      --ink: #292522;
-      --muted: #8d827b;
-      --rose: #c98287;
-      --rose-light: #f0d9d8;
-      --line: #eae0d8;
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      min-height: 100vh;
-      background: var(--cream);
-      color: var(--ink);
-      font-family: 'DM Sans', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      overflow-x: hidden;
-    }
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      background: var(--rose-light);
-      filter: blur(90px);
-      opacity: .48;
-      z-index: -1;
-      pointer-events: none;
-    }
-    body::before {
-      top: -100px;
-      left: -100px;
-    }
-    body::after {
-      right: -100px;
-      bottom: -100px;
-    }
-    .container {
-      width: 100%;
-      max-width: 430px;
-      text-align: center;
-      animation: appear 1s ease both;
-    }
-    .top-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      color: var(--muted);
-      font-size: 10px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 48px;
-    }
-    .top-label::before,
-    .top-label::after {
-      content: "";
-      width: 20px;
-      height: 1px;
-      background: var(--rose);
-    }
-    .heart-wrap {
-      width: 100px;
-      height: 100px;
-      margin: 0 auto 30px;
-      background: rgba(240, 217, 216, .65);
-      border: 1px solid rgba(201, 130, 135, .25);
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      animation: float 4s ease-in-out infinite;
-    }
-    .heart {
-      color: var(--rose);
-      font-size: 37px;
-      line-height: 1;
-    }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(43px, 12vw, 58px);
-      font-weight: 400;
-      letter-spacing: -2px;
-      line-height: 1.15;
-    }
-    h1 span {
-      color: var(--rose);
-      font-style: italic;
-    }
-    .subtitle {
-      margin: 17px auto 0;
-      max-width: 285px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.9;
-    }
-    .divider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin: 34px 0;
-      color: var(--rose);
-      font-size: 12px;
-    }
-    .divider span {
-      height: 1px;
-      width: 45px;
-      background: var(--line);
-    }
-    .welcome-card {
-      background: rgba(255, 253, 249, .78);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 27px 23px;
-      box-shadow: 0 15px 50px rgba(69, 48, 37, .045);
-    }
-    .welcome-card h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-    .welcome-card > p {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.8;
-      margin-bottom: 24px;
-    }
-    .field {
-      text-align: left;
-      margin-bottom: 15px;
-    }
-    .field label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .field input {
-      width: 100%;
-      padding: 15px 16px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--paper);
-      color: var(--ink);
-      font: inherit;
-      font-size: 13px;
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
-    }
-    .field input:focus {
-      border-color: var(--rose);
-      box-shadow: 0 0 0 3px rgba(201, 130, 135, .10);
-    }
-    .field input::placeholder {
-      color: #b6aaa2;
-    }
-    .enter-btn {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 4px;
-      background: var(--ink);
-      color: white;
-      font: inherit;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .5px;
-      cursor: pointer;
-      transition: transform .2s, background .2s;
-    }
-    .enter-btn:active {
-      transform: scale(.98);
-    }
-    .enter-btn:hover {
-      background: #453631;
-    }
-    .message {
-      display: none;
-      margin-top: 14px;
-      font-size: 12px;
-      line-height: 1.7;
-      color: #a34e59;
-    }
-    .footer {
-      margin-top: 28px;
-      color: #a69a92;
-      font-size: 10px;
-      letter-spacing: .5px;
-    }
-    .footer span {
-      color: var(--rose);
-    }
-    .floating-heart {
-      position: fixed;
-      color: var(--rose);
-      opacity: .25;
-      pointer-events: none;
-      animation: drift 7s ease-in-out infinite;
-      z-index: -1;
-    }
-    .heart-one {
-      top: 17%;
-      left: 10%;
-      font-size: 17px;
-    }
-    .heart-two {
-      right: 11%;
-      top: 29%;
-      font-size: 12px;
-      animation-delay: 1.5s;
-    }
-    .heart-three {
-      bottom: 16%;
-      left: 15%;
-      font-size: 13px;
-      animation-delay: 2.5s;
-    }
-    @keyframes appear {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-7px); }
-    }
-    @keyframes drift {
-      0%, 100% { transform: translateY(0) rotate(0); }
-      50% { transform: translateY(-12px) rotate(10deg); }
-    }
-    @media (max-width: 380px) {
-      body { padding: 20px 15px; }
-      .top-label { margin-bottom: 35px; }
-      .welcome-card { padding: 23px 18px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f8f4ef">
+<title>Between Us 🤍</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f8f4ef;--paper:#fffdf9;--ink:#292522;--muted:#8d827b;--rose:#c98287;--light:#f0d9d8;--line:#eae0d8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;padding:22px}
+.container,.chat-screen{width:100%;max-width:430px;text-align:center}
+.top-label{font-size:10px;letter-spacing:3px;color:var(--muted);margin-bottom:30px}
+.heart-wrap{width:78px;height:78px;margin:0 auto 20px;background:var(--light);border-radius:50%;display:grid;place-items:center}
+.heart{color:var(--rose);font-size:35px}
+h1{font-family:'Playfair Display',serif;font-size:54px;font-weight:400;letter-spacing:-2px}
+h1 span{color:var(--rose);font-style:italic}
+.subtitle{margin:14px auto;color:var(--muted);font-size:13px;line-height:1.9}
+.divider{margin:25px;color:var(--rose)}
+.divider span{display:inline-block;width:45px;height:1px;background:var(--line);vertical-align:middle;margin:0 10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:25px 22px;box-shadow:0 15px 50px #4530250b}
+h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;margin-bottom:9px}
+.intro{color:var(--muted);font-size:12px;line-height:1.8;margin-bottom:22px}
+.field{text-align:left;margin-bottom:14px}
+label{display:block;margin-bottom:8px;font-size:10px;font-weight:600;letter-spacing:1.5px;color:var(--muted)}
+input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:12px;background:var(--paper);font:inherit;font-size:13px;outline:none}
+input:focus{border-color:var(--rose)}
+button{cursor:pointer;font:inherit}
+.btn{width:100%;border:0;border-radius:12px;padding:15px;margin-top:4px;background:var(--ink);color:white;font-size:12px;font-weight:600}
+.btn:disabled{opacity:.6}
+.message{display:none;margin-top:12px;font-size:12px;line-height:1.6;color:#a34e59}
+.footer{margin-top:24px;color:#a69a92;font-size:10px}
+.footer span{color:var(--rose)}
+.hidden{display:none!important}
+.chat-screen{max-width:520px}
+.chat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;text-align:left}
+.chat-head p{font-size:11px;color:var(--muted);margin-top:4px}
+.exit-btn{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:10px 12px;font-size:11px}
+.chat-card{padding:16px;text-align:left}
+.chat-log{height:52vh;min-height:250px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 2px 14px}
+.bubble{max-width:85%;align-self:flex-start;background:#f2e8e2;border-radius:15px 15px 15px 4px;padding:10px 12px;overflow-wrap:anywhere}
+.bubble.mine{align-self:flex-end;background:#ead0d1;border-radius:15px 15px 4px 15px}
+.sender{font-size:10px;font-weight:700;color:#87676a;margin-bottom:4px}
+.body{font-size:13px;line-height:1.55;white-space:pre-wrap}
+.bubble time{display:block;font-size:9px;color:var(--muted);text-align:right;margin-top:5px}
+.empty-chat{text-align:center;color:var(--muted);font-size:12px;margin:auto;line-height:1.8}
+.compose{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.compose input{min-width:0;flex:1}
+.send-btn{width:auto;min-width:70px;margin:0;padding:0 16px}
+.chat-status{font-size:11px;color:var(--muted);min-height:18px;margin-top:9px;text-align:center}
+@media(max-width:380px){body{padding:16px 13px}.card{padding:22px 17px}h1{font-size:46px}}
+</style>
 </head>
 <body>
-  <div class="floating-heart heart-one">♡</div>
-  <div class="floating-heart heart-two">♡</div>
-  <div class="floating-heart heart-three">♡</div>
-  <main class="container">
-    <div class="top-label">A space for two</div>
-    <div class="heart-wrap">
-      <div class="heart">♡</div>
+
+<main class="container" id="entryScreen">
+  <div class="top-label">A SPACE FOR TWO</div>
+  <div class="heart-wrap"><div class="heart">♡</div></div>
+  <h1>Between <span>Us.</span></h1>
+  <p class="subtitle">Somewhere between your world and mine,<br>there's a little place that belongs to us.</p>
+  <div class="divider"><span></span>♡<span></span></div>
+
+  <section class="card">
+    <h2>Welcome to our little world</h2>
+    <p class="intro">No noise. No crowd. Just two people<br>making something beautiful together.</p>
+
+    <form id="entryForm">
+      <div class="field">
+        <label for="yourName">YOUR NAME</label>
+        <input id="yourName" type="text" placeholder="What should we call you?" maxlength="40" required>
+      </div>
+      <div class="field">
+        <label for="roomCode">OUR PRIVATE ROOM CODE</label>
+        <input id="roomCode" type="password" placeholder="Enter your room code" maxlength="64" required>
+      </div>
+      <button class="btn" id="enterBtn" type="submit">Enter our world →</button>
+      <p class="message" id="entryMessage" role="alert"></p>
+    </form>
+  </section>
+  <div class="footer">Made with <span>♡</span> for two, and two only.</div>
+</main>
+
+<main class="chat-screen hidden" id="chatScreen">
+  <div class="chat-head">
+    <div>
+      <h2>Between <span style="color:var(--rose);font-style:italic">Us.</span></h2>
+      <p id="welcomeName">Your little world, together.</p>
     </div>
-    <h1>Between <span>Us.</span></h1>
-    <p class="subtitle">
-      Somewhere between your world and mine,<br>
-      there's a little place that belongs to us.
-    </p>
-    <div class="divider">
-      <span></span> ♡ <span></span>
+    <button class="exit-btn" id="exitBtn" type="button">Leave</button>
+  </div>
+
+  <section class="card chat-card">
+    <div class="chat-log" id="chatLog">
+      <div class="empty-chat">Opening your little world… ♡</div>
     </div>
-    <section class="welcome-card">
-      <h2>Welcome to our little world</h2>
-      <p>
-        No noise. No crowd. Just two people<br>
-        making something beautiful together.
-      </p>
-      <form id="entryForm">
-        <div class="field">
-          <label for="yourName">Your name</label>
-          <input
-            id="yourName"
-            type="text"
-            placeholder="What should we call you?"
-            maxlength="40"
-            autocomplete="nickname"
-            required
-          >
-        </div>
-        <div class="field">
-          <label for="roomCode">Our private room code</label>
-          <input
-            id="roomCode"
-            type="password"
-            placeholder="Enter your room code"
-            maxlength="64"
-            autocomplete="off"
-            required
-          >
-        </div>
-        <button class="enter-btn" type="submit">
-          Enter our world &nbsp; →
-        </button>
-        <p class="message" id="message" role="alert"></p>
-      </form>
-    </section>
-    <div class="footer">
-      Made with <span>♡</span> for two, and two only.
+    <form class="compose" id="messageForm">
+      <input id="messageInput" type="text" maxlength="2000" placeholder="Write something sweet…" required>
+      <button class="btn send-btn" id="sendBtn" type="submit">Send</button>
+    </form>
+    <div class="chat-status" id="chatStatus">Connecting…</div>
+  </section>
+  <div class="footer">A little space, just for two <span>♡</span></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://uyzuyteoermxrzssxmbl.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_XSDjTlL996duEbBurUx0eQ_w4iHvGLF";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+const $ = id => document.getElementById(id);
+
+let currentUserId = null;
+let activeRoomId = null;
+let displayName = "";
+let pollTimer = null;
+
+function showError(text) {
+  $("entryMessage").textContent = text;
+  $("entryMessage").style.display = "block";
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  }[c]));
+}
+
+async function loadMessages() {
+  if (!activeRoomId) return;
+
+  const { data, error } = await db
+    .from("messages")
+    .select("*")
+    .eq("room_id", activeRoomId)
+    .order("created_at", { ascending: true })
+    .limit(200);
+
+  if (error) {
+    $("chatStatus").textContent = "Could not load messages. Check Supabase permissions.";
+    console.error(error);
+    return;
+  }
+
+  const rows = data || [];
+
+  if (!rows.length) {
+    $("chatLog").innerHTML =
+      '<div class="empty-chat">It’s quiet in here for now.<br>Send the first message. ♡</div>';
+    $("chatStatus").textContent = "Connected";
+    return;
+  }
+
+  const nearBottom =
+    $("chatLog").scrollHeight - $("chatLog").scrollTop -
+    $("chatLog").clientHeight < 80;
+
+  $("chatLog").innerHTML = rows.map(m => `
+    <div class="bubble ${m.sender_id === currentUserId ? "mine" : ""}">
+      <div class="sender">${m.sender_id === currentUserId ? "You" : "Your person"}</div>
+      <div class="body">${escapeHTML(m.content)}</div>
+      <time>${m.created_at ? escapeHTML(new Date(m.created_at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})) : ""}</time>
     </div>
-  </main>
-  <script>
-    /*
-      This is the visual starting page only.
-      Authentication and private rooms are not connected yet.
-      Do not enter real passwords or sensitive information here.
-    */
-    const form = document.getElementById("entryForm");
-    const message = document.getElementById("message");
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-      message.textContent =
-        "Our private room is still being prepared. Come back soon. ♡";
-      message.style.display = "block";
+  `).join("");
+
+  if (nearBottom) $("chatLog").scrollTop = $("chatLog").scrollHeight;
+  $("chatStatus").textContent = "Connected · messages refresh automatically";
+}
+
+$("entryForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  $("entryMessage").style.display = "none";
+
+  displayName = $("yourName").value.trim();
+  const code = $("roomCode").value.trim();
+
+  if (!displayName || !code) return;
+
+  $("enterBtn").disabled = true;
+  $("enterBtn").textContent = "Opening your world…";
+
+  try {
+    let { data: sessionData, error: sessionError } = await db.auth.getSession();
+    if (sessionError) throw sessionError;
+
+    if (!sessionData.session) {
+      const { data, error } = await db.auth.signInAnonymously();
+      if (error) throw error;
+      sessionData = { session: data.session };
+    }
+
+    currentUserId = sessionData.session.user.id;
+
+    const { data, error } = await db.rpc("join_private_room", {
+      p_room_code: code
     });
-  </script>
+
+    if (error) throw error;
+
+    activeRoomId = typeof data === "string"
+      ? data
+      : Array.isArray(data)
+        ? data[0]?.room_id
+        : data?.room_id;
+
+    if (!activeRoomId) throw new Error("Invalid room code");
+
+    $("welcomeName").textContent = `Welcome, ${displayName}. Just the two of you.`;
+    $("entryScreen").classList.add("hidden");
+    $("chatScreen").classList.remove("hidden");
+
+    await loadMessages();
+
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(loadMessages, 3500);
+
+  } catch (error) {
+    console.error(error);
+    const msg = String(error?.message || "");
+
+    if (/invalid|room code|not found/i.test(msg)) {
+      showError("That room code didn’t work. Check it and try again. ♡");
+    } else if (/anonymous|signups|disabled/i.test(msg)) {
+      showError("Enable Anonymous Sign-Ins in Supabase Authentication settings.");
+    } else {
+      showError("Connection failed. Check the error in your browser console or Supabase logs.");
+    }
+  } finally {
+    $("enterBtn").disabled = false;
+    $("enterBtn").textContent = "Enter our world →";
+  }
+});
+
+$("messageForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const content = $("messageInput").value.trim();
+  if (!content || !activeRoomId || !currentUserId) return;
+
+  $("sendBtn").disabled = true;
+
+  try {
+    const { error } = await db.from("messages").insert({
+      room_id: activeRoomId,
+      content,
+      sender_id: currentUserId
+    });
+
+    if (error) throw error;
+
+    $("messageInput").value = "";
+    await loadMessages();
+    $("messageInput").focus();
+
+  } catch (error) {
+    console.error(error);
+    $("chatStatus").textContent = "Message failed. Check your messages table permissions.";
+  } finally {
+    $("sendBtn").disabled = false;
+  }
+});
+
+$("exitBtn").addEventListener("click", () => {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = null;
+  activeRoomId = null;
+  $("chatScreen").classList.add("hidden");
+  $("entryScreen").classList.remove("hidden");
+  $("roomCode").value = "";
+  $("entryMessage").style.display = "none";
+});
+</script>
 </body>
 </html>
