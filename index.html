@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f8f4ef">
 <title>Between Us 🤍</title>
+
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
 <style>
 :root{--cream:#f8f4ef;--paper:#fffdf9;--ink:#292522;--muted:#8d827b;--rose:#c98287;--light:#f0d9d8;--line:#eae0d8}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -28,8 +30,8 @@ input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:12
 input:focus{border-color:var(--rose)}
 button{cursor:pointer;font:inherit}
 .btn{width:100%;border:0;border-radius:12px;padding:15px;margin-top:4px;background:var(--ink);color:white;font-size:12px;font-weight:600}
-.btn:disabled{opacity:.6}
-.message{display:none;margin-top:12px;font-size:12px;line-height:1.6;color:#a34e59}
+.btn:disabled{opacity:.6;cursor:wait}
+.message{display:none;margin-top:12px;font-size:12px;line-height:1.6;color:#a34e59;overflow-wrap:anywhere}
 .footer{margin-top:24px;color:#a69a92;font-size:10px}
 .footer span{color:var(--rose)}
 .hidden{display:none!important}
@@ -48,10 +50,11 @@ button{cursor:pointer;font:inherit}
 .compose{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px}
 .compose input{min-width:0;flex:1}
 .send-btn{width:auto;min-width:70px;margin:0;padding:0 16px}
-.chat-status{font-size:11px;color:var(--muted);min-height:18px;margin-top:9px;text-align:center}
+.chat-status{font-size:11px;color:var(--muted);min-height:18px;margin-top:9px;text-align:center;overflow-wrap:anywhere}
 @media(max-width:380px){body{padding:16px 13px}.card{padding:22px 17px}h1{font-size:46px}}
 </style>
 </head>
+
 <body>
 
 <main class="container" id="entryScreen">
@@ -70,14 +73,17 @@ button{cursor:pointer;font:inherit}
         <label for="yourName">YOUR NAME</label>
         <input id="yourName" type="text" placeholder="What should we call you?" maxlength="40" required>
       </div>
+
       <div class="field">
         <label for="roomCode">OUR PRIVATE ROOM CODE</label>
         <input id="roomCode" type="password" placeholder="Enter your room code" maxlength="64" required>
       </div>
+
       <button class="btn" id="enterBtn" type="submit">Enter our world →</button>
       <p class="message" id="entryMessage" role="alert"></p>
     </form>
   </section>
+
   <div class="footer">Made with <span>♡</span> for two, and two only.</div>
 </main>
 
@@ -94,16 +100,20 @@ button{cursor:pointer;font:inherit}
     <div class="chat-log" id="chatLog">
       <div class="empty-chat">Opening your little world… ♡</div>
     </div>
+
     <form class="compose" id="messageForm">
       <input id="messageInput" type="text" maxlength="2000" placeholder="Write something sweet…" required>
       <button class="btn send-btn" id="sendBtn" type="submit">Send</button>
     </form>
+
     <div class="chat-status" id="chatStatus">Connecting…</div>
   </section>
+
   <div class="footer">A little space, just for two <span>♡</span></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 const SUPABASE_URL = "https://uyzuyteoermxrzssxmbl.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_XSDjTlL996duEbBurUx0eQ_w4iHvGLF";
@@ -119,62 +129,98 @@ let currentUserId = null;
 let activeRoomId = null;
 let displayName = "";
 let pollTimer = null;
+let loadingMessages = false;
 
-function showError(text) {
-  $("entryMessage").textContent = text;
+function showError(message) {
+  $("entryMessage").textContent = message;
   $("entryMessage").style.display = "block";
 }
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;",
-    '"':"&quot;", "'":"&#39;"
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
   }[c]));
 }
 
+function getRoomId(data) {
+  if (typeof data === "string") return data;
+
+  if (Array.isArray(data)) {
+    if (!data.length) return null;
+    if (typeof data[0] === "string") return data[0];
+
+    return data[0]?.room_id
+      ?? data[0]?.join_private_room
+      ?? null;
+  }
+
+  if (data && typeof data === "object") {
+    return data.room_id
+      ?? data.join_private_room
+      ?? null;
+  }
+
+  return null;
+}
+
 async function loadMessages() {
-  if (!activeRoomId) return;
+  if (!activeRoomId || loadingMessages) return;
 
-  const { data, error } = await db
-    .from("messages")
-    .select("*")
-    .eq("room_id", activeRoomId)
-    .order("created_at", { ascending: true })
-    .limit(200);
+  loadingMessages = true;
 
-  if (error) {
-    $("chatStatus").textContent = "Could not load messages. Check Supabase permissions.";
-    console.error(error);
-    return;
+  try {
+    const { data, error } = await db
+      .from("messages")
+      .select("*")
+      .eq("room_id", activeRoomId)
+      .order("created_at", { ascending: true })
+      .limit(200);
+
+    if (error) throw error;
+
+    const rows = data || [];
+    const log = $("chatLog");
+
+    const nearBottom =
+      log.scrollHeight - log.scrollTop - log.clientHeight < 100;
+
+    if (!rows.length) {
+      log.innerHTML =
+        '<div class="empty-chat">It’s quiet in here for now.<br>Send the first message. ♡</div>';
+      $("chatStatus").textContent = "Connected";
+      return;
+    }
+
+    log.innerHTML = rows.map(m => `
+      <div class="bubble ${m.sender_id === currentUserId ? "mine" : ""}">
+        <div class="sender">${m.sender_id === currentUserId ? escapeHTML(displayName) : "Your person"}</div>
+        <div class="body">${escapeHTML(m.content)}</div>
+        <time>${m.created_at ? escapeHTML(new Date(m.created_at).toLocaleTimeString([], {
+          hour:"2-digit",
+          minute:"2-digit"
+        })) : ""}</time>
+      </div>
+    `).join("");
+
+    if (nearBottom) log.scrollTop = log.scrollHeight;
+
+    $("chatStatus").textContent = "Connected · messages refresh automatically";
+
+  } catch (error) {
+    console.error("Message loading error:", error);
+    $("chatStatus").textContent = "Message error: " + (error.message || "Check Supabase permissions.");
+  } finally {
+    loadingMessages = false;
   }
-
-  const rows = data || [];
-
-  if (!rows.length) {
-    $("chatLog").innerHTML =
-      '<div class="empty-chat">It’s quiet in here for now.<br>Send the first message. ♡</div>';
-    $("chatStatus").textContent = "Connected";
-    return;
-  }
-
-  const nearBottom =
-    $("chatLog").scrollHeight - $("chatLog").scrollTop -
-    $("chatLog").clientHeight < 80;
-
-  $("chatLog").innerHTML = rows.map(m => `
-    <div class="bubble ${m.sender_id === currentUserId ? "mine" : ""}">
-      <div class="sender">${m.sender_id === currentUserId ? "You" : "Your person"}</div>
-      <div class="body">${escapeHTML(m.content)}</div>
-      <time>${m.created_at ? escapeHTML(new Date(m.created_at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})) : ""}</time>
-    </div>
-  `).join("");
-
-  if (nearBottom) $("chatLog").scrollTop = $("chatLog").scrollHeight;
-  $("chatStatus").textContent = "Connected · messages refresh automatically";
 }
 
 $("entryForm").addEventListener("submit", async event => {
   event.preventDefault();
+
   $("entryMessage").style.display = "none";
 
   displayName = $("yourName").value.trim();
@@ -183,35 +229,47 @@ $("entryForm").addEventListener("submit", async event => {
   if (!displayName || !code) return;
 
   $("enterBtn").disabled = true;
-  $("enterBtn").textContent = "Opening your world…";
+  $("enterBtn").textContent = "Connecting…";
 
   try {
-    let { data: sessionData, error: sessionError } = await db.auth.getSession();
-    if (sessionError) throw sessionError;
+    // Authenticate the visitor.
+    let { data: authData, error: authError } =
+      await db.auth.getSession();
 
-    if (!sessionData.session) {
-      const { data, error } = await db.auth.signInAnonymously();
-      if (error) throw error;
-      sessionData = { session: data.session };
+    if (authError) throw authError;
+
+    if (!authData.session) {
+      const result = await db.auth.signInAnonymously();
+
+      if (result.error) throw result.error;
+
+      authData = { session: result.data.session };
     }
 
-    currentUserId = sessionData.session.user.id;
+    currentUserId = authData.session?.user?.id;
 
+    if (!currentUserId) {
+      throw new Error("Authentication succeeded, but no user session was returned.");
+    }
+
+    // Join the existing private room.
     const { data, error } = await db.rpc("join_private_room", {
       p_room_code: code
     });
 
     if (error) throw error;
 
-    activeRoomId = typeof data === "string"
-      ? data
-      : Array.isArray(data)
-        ? data[0]?.room_id
-        : data?.room_id;
+    activeRoomId = getRoomId(data);
 
-    if (!activeRoomId) throw new Error("Invalid room code");
+    if (!activeRoomId) {
+      throw new Error(
+        "The join function returned no room ID. Check that the room code exists and the function returns its room UUID."
+      );
+    }
 
-    $("welcomeName").textContent = `Welcome, ${displayName}. Just the two of you.`;
+    $("welcomeName").textContent =
+      `Welcome, ${displayName}. Just the two of you.`;
+
     $("entryScreen").classList.add("hidden");
     $("chatScreen").classList.remove("hidden");
 
@@ -221,16 +279,21 @@ $("entryForm").addEventListener("submit", async event => {
     pollTimer = setInterval(loadMessages, 3500);
 
   } catch (error) {
-    console.error(error);
-    const msg = String(error?.message || "");
+    console.error("Connection error:", error);
 
-    if (/invalid|room code|not found/i.test(msg)) {
-      showError("That room code didn’t work. Check it and try again. ♡");
-    } else if (/anonymous|signups|disabled/i.test(msg)) {
-      showError("Enable Anonymous Sign-Ins in Supabase Authentication settings.");
+    const msg = error?.message || String(error);
+
+    if (/anonymous|signups.*disabled|anonymous.*disabled/i.test(msg)) {
+      showError("Anonymous sign-in is disabled in Supabase Authentication settings.");
+    } else if (/join_private_room|function.*not found|schema cache/i.test(msg)) {
+      showError("Room connection function error: " + msg);
     } else {
-      showError("Connection failed. Check the error in your browser console or Supabase logs.");
+      // Display the actual error instead of assuming the room code is wrong.
+      showError("Connection error: " + msg);
     }
+
+    activeRoomId = null;
+
   } finally {
     $("enterBtn").disabled = false;
     $("enterBtn").textContent = "Enter our world →";
@@ -241,16 +304,20 @@ $("messageForm").addEventListener("submit", async event => {
   event.preventDefault();
 
   const content = $("messageInput").value.trim();
+
   if (!content || !activeRoomId || !currentUserId) return;
 
   $("sendBtn").disabled = true;
+  $("chatStatus").textContent = "Sending…";
 
   try {
-    const { error } = await db.from("messages").insert({
-      room_id: activeRoomId,
-      content,
-      sender_id: currentUserId
-    });
+    const { error } = await db
+      .from("messages")
+      .insert({
+        room_id: activeRoomId,
+        content: content,
+        sender_id: currentUserId
+      });
 
     if (error) throw error;
 
@@ -259,22 +326,26 @@ $("messageForm").addEventListener("submit", async event => {
     $("messageInput").focus();
 
   } catch (error) {
-    console.error(error);
-    $("chatStatus").textContent = "Message failed. Check your messages table permissions.";
+    console.error("Send error:", error);
+    $("chatStatus").textContent =
+      "Send error: " + (error.message || "Check Supabase permissions.");
   } finally {
     $("sendBtn").disabled = false;
   }
 });
 
-$("exitBtn").addEventListener("click", () => {
+$("exitBtn").addEventListener("click", async () => {
   if (pollTimer) clearInterval(pollTimer);
+
   pollTimer = null;
   activeRoomId = null;
+
   $("chatScreen").classList.add("hidden");
   $("entryScreen").classList.remove("hidden");
   $("roomCode").value = "";
   $("entryMessage").style.display = "none";
 });
 </script>
+
 </body>
 </html>
